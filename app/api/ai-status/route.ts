@@ -28,9 +28,21 @@ export async function GET() {
     });
 
     if (!response.ok) {
+      let detail: { error?: { type?: string; code?: string; message?: string } } = {};
+      try {
+        detail = await response.json();
+      } catch {}
+
       return NextResponse.json(
-        { active: false, reason: "openai_error" },
-        { status: response.status >= 500 ? 502 : 503 },
+        {
+          active: false,
+          reason: "openai_error",
+          openaiStatus: response.status,
+          errorType: detail.error?.type || null,
+          errorCode: detail.error?.code || null,
+          errorMessage: detail.error?.message || null,
+        },
+        { status: 502 },
       );
     }
 
