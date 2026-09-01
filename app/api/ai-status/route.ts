@@ -21,16 +21,16 @@ export async function GET() {
       body: JSON.stringify({
         model,
         input: "Sistem bağlantı testi. Yalnızca OK yanıtı ver.",
-        max_output_tokens: 5,
+        max_output_tokens: 16,
         store: false,
       }),
       cache: "no-store",
     });
 
     if (!response.ok) {
-      let detail: { error?: { type?: string; code?: string; message?: string } } = {};
+      let details: { error?: { type?: string; code?: string; message?: string } } | null = null;
       try {
-        detail = await response.json();
+        details = await response.json();
       } catch {}
 
       return NextResponse.json(
@@ -38,11 +38,11 @@ export async function GET() {
           active: false,
           reason: "openai_error",
           openaiStatus: response.status,
-          errorType: detail.error?.type || null,
-          errorCode: detail.error?.code || null,
-          errorMessage: detail.error?.message || null,
+          errorType: details?.error?.type ?? null,
+          errorCode: details?.error?.code ?? null,
+          errorMessage: details?.error?.message ?? null,
         },
-        { status: 502 },
+        { status: response.status >= 500 ? 502 : 503 },
       );
     }
 
