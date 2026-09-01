@@ -1,12 +1,107 @@
 import Link from "next/link";
 
-const modules: Record<string,string>={
-  "gelen-kutusu":"Gelen Kutusu","musteriler":"Müşteriler","satis-firsatlari":"Satış Fırsatları","urunler":"Ürünler","stok":"Stok Yönetimi","fiyat-motoru":"Fiyat Motoru","kampanyalar":"Kampanyalar","raporlar":"Raporlar & Analitik","ai-center":"AI Center","entegrasyonlar":"Entegrasyonlar","ayarlar":"Ayarlar"
-};
-const nav=[
-  ["⌂","Genel Bakış","/"],["✉","Gelen Kutusu","/gelen-kutusu"],["♙","Müşteriler","/musteriler"],["ϟ","Satış Fırsatları","/satis-firsatlari"],["◇","Ürünler","/urunler"],["▣","Stok Yönetimi","/stok"],["₺","Fiyat Motoru","/fiyat-motoru"],["✣","Kampanyalar","/kampanyalar"],["▥","Raporlar & Analitik","/raporlar"],["◈","AI Center","/ai-center"],["◫","Entegrasyonlar","/entegrasyonlar"],["⚙","Ayarlar","/ayarlar"]
+type Row = { name: string; detail: string; status?: string; value?: string };
+
+const nav = [
+  ["⌂", "Genel Bakış", "/"], ["✉", "Gelen Kutusu", "/gelen-kutusu"], ["♙", "Müşteriler", "/musteriler"],
+  ["ϟ", "Satış Fırsatları", "/satis-firsatlari"], ["◇", "Ürünler", "/urunler"], ["▣", "Stok Yönetimi", "/stok"],
+  ["₺", "Fiyat Motoru", "/fiyat-motoru"], ["✣", "Kampanyalar", "/kampanyalar"], ["▥", "Raporlar & Analitik", "/raporlar"],
+  ["◈", "AI Center", "/ai-center"], ["◫", "Entegrasyonlar", "/entegrasyonlar"], ["⚙", "Ayarlar", "/ayarlar"]
 ];
-export default async function Section({params}:{params:Promise<{section:string}>}){
-  const {section}=await params; const title=modules[section]??"Kuyumcu AI";
-  return <div className="app"><aside className="sidebar"><div className="brand"><div className="brand-mark"><span>◇</span></div><div><div className="brand-title">KUYUMCU AI</div><div className="brand-sub">SATIŞ ASİSTANI</div></div></div><div className="store"><div className="store-badge">LG</div><div><div className="store-name">Luxe Gold</div><div className="store-sub">Kuyumculuk</div></div></div><nav className="nav">{nav.map(([icon,label,href])=><Link key={label} href={href} className={href===`/${section}`?"active":""}><span className="icon">{icon}</span><span>{label}</span></Link>)}</nav></aside><main className="main"><header className="topbar"><Link className="gold-btn" href="/">← Genel Bakış</Link></header><section className="content section-page"><div className="kicker">KUYUMCU AI S1</div><h1>{title}</h1><p>{title} modülü S1 tasarım sistemine bağlı temiz çalışma alanıdır.</p><div className="placeholder"><strong>{title}</strong><p>Bu ekranın fonksiyonları ve gerçek verileri sonraki geliştirme adımında aynı görsel dil korunarak eklenecek. Kritik gram, ayar, stok ve fiyat bilgileri yalnızca kuyumcu tarafından girilen/onaylanan veriden alınacaktır.</p></div></section></main></div>
+
+const modules: Record<string, { title: string; subtitle: string; action: string; actionHref: string; rows: Row[] }> = {
+  "gelen-kutusu": { title: "Gelen Kutusu", subtitle: "WhatsApp, Instagram ve web görüşmelerini tek merkezden yönetin.", action: "Yeni görüşme", actionHref: "/gelen-kutusu?new=1", rows: [
+    { name: "Elif Kaya", detail: "Pırlanta yüzük modelleri hakkında bilgi istiyor.", status: "WhatsApp · Aktif", value: "14:32" },
+    { name: "burcu_aksu", detail: "Bu bilekliğin fiyatı nedir?", status: "Instagram · Yanıt bekliyor", value: "14:28" },
+    { name: "Mehmet Demir", detail: "Kargo ne zaman gelir?", status: "WhatsApp · Takip", value: "14:22" },
+    { name: "seda_altun", detail: "Sarı altın mı beyaz altın mı?", status: "Instagram · Aktif", value: "14:18" }
+  ]},
+  "musteriler": { title: "Müşteriler", subtitle: "Müşteri profilleri, etkileşim geçmişi ve satış sinyalleri.", action: "Müşteri ekle", actionHref: "/musteriler?new=1", rows: [
+    { name: "Ahmet Yılmaz", detail: "12 görüşme · 3 teklif", status: "Yüksek ilgi", value: "₺128.500" },
+    { name: "Elif Kaya", detail: "8 görüşme · 2 ürün önerisi", status: "Aktif", value: "₺74.900" },
+    { name: "Mehmet Demir", detail: "5 görüşme · Kargo takibi", status: "Takipte", value: "₺18.750" },
+    { name: "Ayşe Yıldız", detail: "3 görüşme · Ölçü desteği", status: "Yeni", value: "—" }
+  ]},
+  "satis-firsatlari": { title: "Satış Fırsatları", subtitle: "AI tarafından tespit edilen fırsatları insan onayıyla satışa dönüştürün.", action: "Fırsat oluştur", actionHref: "/satis-firsatlari?new=1", rows: [
+    { name: "Elif Kaya", detail: "Pırlanta yüzük · yüksek satın alma niyeti", status: "Sıcak", value: "₺95.000" },
+    { name: "burcu_aksu", detail: "Bileklik · fiyat soruldu", status: "Sıcak", value: "₺24.500" },
+    { name: "Ayşe Yıldız", detail: "Yüzük · ölçü desteği sonrası", status: "Ilık", value: "₺18.900" },
+    { name: "seda_altun", detail: "Beyaz altın · ürün önerisi", status: "Yeni", value: "₺31.200" }
+  ]},
+  "urunler": { title: "Ürünler", subtitle: "Katalog, ürün kartları ve kuyumcu tarafından doğrulanmış ticari bilgiler.", action: "Ürün ekle", actionHref: "/urunler?new=1", rows: [
+    { name: "LG-PIR-001", detail: "Pırlanta yüzük · 14 ayar", status: "Aktif", value: "Kuyumcu verisi" },
+    { name: "LG-YZ-014", detail: "Yüzük · 22 ayar", status: "Aktif", value: "Kuyumcu verisi" },
+    { name: "LG-BLK-022", detail: "Bileklik · 14 ayar", status: "Aktif", value: "Kuyumcu verisi" },
+    { name: "LG-KLP-008", detail: "Kolye · 18 ayar", status: "Pasif", value: "Kuyumcu verisi" }
+  ]},
+  "stok": { title: "Stok Yönetimi", subtitle: "Şube bazlı stok görünümü ve operasyon takibi.", action: "Stok hareketi", actionHref: "/stok?new=1", rows: [
+    { name: "Merkez Şube", detail: "1.248 ürün · 32 kritik stok", status: "Normal", value: "1.248" },
+    { name: "Cadde Şube", detail: "842 ürün · 18 kritik stok", status: "Dikkat", value: "842" },
+    { name: "Depo", detail: "2.315 ürün · 7 bekleyen giriş", status: "Normal", value: "2.315" },
+    { name: "Transferler", detail: "4 açık transfer · 2 onay bekliyor", status: "Onay bekliyor", value: "4" }
+  ]},
+  "fiyat-motoru": { title: "Fiyat Motoru", subtitle: "Fiyat kuralları ve kuyumcu onaylı ticari verilerle kontrollü hesaplama.", action: "Fiyat kuralı ekle", actionHref: "/fiyat-motoru?new=1", rows: [
+    { name: "22 Ayar Altın", detail: "Kuyumcu fiyat tabanı", status: "Onaylı", value: "Manuel" },
+    { name: "14 Ayar Altın", detail: "Kuyumcu fiyat tabanı", status: "Onaylı", value: "Manuel" },
+    { name: "İşçilik", detail: "Ürün kartından alınır", status: "Onaylı", value: "Manuel" },
+    { name: "Kampanya indirimi", detail: "Uygulama öncesi onay gerekir", status: "Onay bekliyor", value: "%0" }
+  ]},
+  "kampanyalar": { title: "Kampanyalar", subtitle: "Kampanya oluşturun, hedefleyin ve gönderim öncesi onaylayın.", action: "Kampanya oluştur", actionHref: "/kampanyalar?new=1", rows: [
+    { name: "Eylül Pırlanta", detail: "Seçili müşteriler · taslak", status: "Taslak", value: "0 gönderim" },
+    { name: "Yeni Sezon", detail: "Instagram + WhatsApp hedefi", status: "Onay bekliyor", value: "184 kişi" },
+    { name: "Sadakat Müşterileri", detail: "VIP segment · planlandı", status: "Planlandı", value: "62 kişi" }
+  ]},
+  "raporlar": { title: "Raporlar & Analitik", subtitle: "Satış, müşteri, AI ve operasyon performansını tek ekranda izleyin.", action: "Rapor oluştur", actionHref: "/raporlar?new=1", rows: [
+    { name: "Günlük performans", detail: "Görüşme, fırsat ve dönüşüm", status: "Hazır", value: "Bugün" },
+    { name: "AI performansı", detail: "Yanıt, çözüm ve insan devri", status: "Hazır", value: "Son 30 gün" },
+    { name: "Satış dönüşüm", detail: "Huni ve kanal karşılaştırması", status: "Hazır", value: "Son 30 gün" },
+    { name: "Stok raporu", detail: "Kritik stok ve transferler", status: "Hazır", value: "Bugün" }
+  ]},
+  "ai-center": { title: "AI Center", subtitle: "AI asistanınızın davranışlarını, önerilerini ve insan onayı gerektiren işlemleri yönetin.", action: "AI ayarları", actionHref: "/ai-center?settings=1", rows: [
+    { name: "Görüşme asistanı", detail: "Müşteri sorularına yanıt ve ürün önerisi", status: "Aktif", value: "%78 çözüm" },
+    { name: "Satış fırsatı tespiti", detail: "Satın alma niyeti sinyallerini işaretler", status: "Aktif", value: "28 fırsat" },
+    { name: "İnsan müdahalesi", detail: "Riskli veya hassas konuşmaları devreder", status: "Aktif", value: "8 bekliyor" },
+    { name: "Ticari veri koruması", detail: "Gram, ayar, stok ve fiyat AI tarafından değiştirilmez", status: "Kilitli", value: "Onaylı" }
+  ]},
+  "entegrasyonlar": { title: "Entegrasyonlar", subtitle: "Kanallarınızı ve veri senkronizasyonlarını güvenli şekilde yönetin.", action: "Entegrasyon ekle", actionHref: "/entegrasyonlar?new=1", rows: [
+    { name: "WhatsApp Business", detail: "Mesajlaşma kanalı", status: "Bağlı · Aktif", value: "5 dk önce" },
+    { name: "Instagram", detail: "DM kanalı", status: "Bağlı · Aktif", value: "5 dk önce" },
+    { name: "Web Sitesi", detail: "AI satış asistanı", status: "Bağlı · Aktif", value: "5 dk önce" },
+    { name: "Ürün Verileri", detail: "Kuyumcu onaylı katalog", status: "Senkronize", value: "5 dk önce" }
+  ]},
+  "ayarlar": { title: "Ayarlar", subtitle: "Mağaza, kullanıcı, bildirim, güvenlik ve AI çalışma tercihlerini yönetin.", action: "Yeni kullanıcı", actionHref: "/ayarlar?new=user", rows: [
+    { name: "Mağaza ayarları", detail: "Luxe Gold Kuyumculuk", status: "Yapılandırıldı", value: "›" },
+    { name: "Kullanıcılar & yetkiler", detail: "Yönetici ve personel erişimleri", status: "Yapılandırıldı", value: "›" },
+    { name: "Bildirimler", detail: "AI, operasyon ve satış uyarıları", status: "Aktif", value: "›" },
+    { name: "Güvenlik", detail: "Oturum ve erişim kontrolleri", status: "Güvenli", value: "›" }
+  ]}
+};
+
+function Sidebar({ section }: { section: string }) {
+  return <aside className="sidebar">
+    <Link href="/" className="brand"><div className="brand-mark"><span>◇</span></div><div><div className="brand-title">KUYUMCU AI</div><div className="brand-sub">SATIŞ ASİSTANI</div></div></Link>
+    <div className="store"><div className="store-badge">LG</div><div><b>Luxe Gold</b><div className="store-sub">Kuyumculuk</div></div><span className="chev">⌄</span></div>
+    <nav className="nav">{nav.map(([icon,label,href])=><Link key={label} href={href} className={href===`/${section}`?"active":""}><span className="icon">{icon}</span><span>{label}</span>{label==="Gelen Kutusu"&&<span className="badge">12</span>}{label==="Satış Fırsatları"&&<span className="badge">8</span>}</Link>)}</nav>
+    <div className="plan"><div className="eyebrow">MEVCUT PAKET</div><strong>Pro Gold</strong><div className="plan-row"><span>Sonraki fatura</span><span>20 Eylül</span></div><div className="plan-row"><span>Kullanım</span><span>%68</span></div><div className="meter"><i /></div><Link className="upgrade" href="/ayarlar">Paketi Yönet</Link></div>
+    <Link href="/ayarlar" className="user"><div className="avatar">👤</div><div><b>Ahmet Yılmaz</b><small>Yönetici</small></div><span className="chev">›</span></Link>
+  </aside>;
+}
+
+function Stat({ label, value, trend }: { label: string; value: string; trend: string }) { return <div className="card metric"><div className="metric-top"><span className="metric-icon">◉</span><span>{label}</span></div><div className="metric-value">{value}</div><span className="trend">{trend}</span></div>; }
+
+export default async function Section({ params }: { params: Promise<{ section: string }> }) {
+  const { section } = await params;
+  const data = modules[section] ?? modules.ayarlar;
+  const stats = section === "gelen-kutusu" ? [["Açık görüşme", "12", "↑ %14"], ["Yanıt bekleyen", "7", "↑ %9"], ["Bugünkü görüşme", "356", "↑ %18.5"], ["İnsan müdahalesi", "8", "↓ %11"]] : section === "satis-firsatlari" ? [["Toplam fırsat", "28", "↑ %27.3"], ["Sıcak", "9", "↑ %12"], ["Teklifte", "11", "↑ %8"], ["Dönüşen", "8", "↑ %18"]] : [["Toplam kayıt", "356", "↑ %18.5"], ["Aktif", "128", "↑ %12.2"], ["Bekleyen", "28", "↑ %7.9"], ["Bugün", "42", "↑ %21.2"]];
+
+  return <div className="app"><Sidebar section={section}/><main className="main">
+    <header className="topbar"><Link className="gold-btn" href={data.actionHref}>＋ {data.action}</Link><Link className="ghost" href="/yardim">ⓘ Yardım</Link><Link className="ghost" href="/ayarlar">⚙</Link></header>
+    <section className="content section-page">
+      <div className="head"><div><div className="kicker">KUYUMCU AI S1</div><h1>{data.title}</h1><p>{data.subtitle}</p></div><div className="filters"><button className="filter">▣ 1 Eylül 2026⌄</button><button className="filter">☷ Filtrele</button></div></div>
+      <div className="metrics">{stats.map(([label,value,trend])=><Stat key={label} label={label} value={value} trend={trend}/>)}</div>
+      <div className="section-toolbar"><div><strong>{data.title}</strong><span>{data.rows.length} kayıt gösteriliyor</span></div><div className="toolbar-actions"><Link className="ghost" href={`${data.actionHref}&mode=filter`}>Filtrele</Link><Link className="gold-btn" href={data.actionHref}>＋ {data.action}</Link></div></div>
+      <div className="panel table-panel"><div className="table-head"><span>Kayıt</span><span>Detay</span><span>Durum</span><span>Değer</span><span></span></div>{data.rows.map((row)=><div className="table-row" key={row.name}><div className="table-name"><span className="row-avatar">{row.name.slice(0,1)}</span><strong>{row.name}</strong></div><div className="table-detail">{row.detail}</div><div><span className="status">{row.status}</span></div><div className="table-value">{row.value}</div><Link className="row-action" href={`/${section}?item=${encodeURIComponent(row.name)}`}>Detay →</Link></div>)}</div>
+      <div className="section-bottom"><div className="panel info-card"><div className="panel-title">AI Asistan Notu</div><div className="panel-body"><strong>Kontrollü otomasyon aktif.</strong><p>AI; müşteri niyeti, öneri ve özetleme gibi yardımcı işlemleri yapabilir. Gram, ayar, işçilik gramı, stok ve fiyat gibi kritik ticari veriler yalnızca kuyumcu tarafından girilen veya onaylanan veriden alınır.</p></div></div><div className="panel info-card"><div className="panel-title">Hızlı erişim</div><div className="quick-links"><Link href="/gelen-kutusu">Görüşmeler →</Link><Link href="/musteriler">Müşteriler →</Link><Link href="/urunler">Ürünler →</Link><Link href="/raporlar">Raporlar →</Link></div></div></div>
+    </section>
+  </main></div>;
 }
